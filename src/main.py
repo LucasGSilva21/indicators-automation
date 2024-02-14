@@ -15,9 +15,15 @@ sales_by_store = {}
 for store in stores['Loja']:
   sales_by_store[store] = sales.loc[sales['Loja'] == store,:]
 
-date_to_analyze = sales['Data'].max()
-
 backup_path = os.path.join(dir, 'backup')
 backup_store_folders = [folder_name for folder_name in os.listdir(backup_path)]
 
-print(backup_store_folders)
+date_to_analyze = sales['Data'].max()
+
+for store_name in sales_by_store:
+  if store_name not in backup_store_folders:
+    os.mkdir(os.path.join(backup_path, store_name))
+
+  file_name = '{}_{}.xlsx'.format(date_to_analyze.date(), store_name)
+  file_path = os.path.join(backup_path, store_name, file_name)
+  sales_by_store[store_name].to_excel(file_path)
